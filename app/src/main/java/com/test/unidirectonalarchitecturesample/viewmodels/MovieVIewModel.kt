@@ -15,8 +15,18 @@ class MovieViewModel(private val movieRepo: MovieRepository): AndroidDataFlow() 
 
     // Our Action here
     fun getMovies() = setState {
-        val movie = movieRepo.getUpcomingMovies()
-        MovieViewState.Movie((movie.data as MovieModel).results)
+
+            val movie = movieRepo.getUpcomingMovies()
+            if(movie.data is MovieModel) {
+                MovieViewState.Movie((movie.data).results)
+            }
+        else
+            {
+                MovieViewState.Failed((movie.data as String))
+            }
+
+
+
     }
 
     fun stopLoading() = setState {

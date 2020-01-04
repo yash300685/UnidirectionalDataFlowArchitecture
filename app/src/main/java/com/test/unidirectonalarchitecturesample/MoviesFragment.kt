@@ -68,9 +68,17 @@ class MoviesFragment : Fragment() {
                     progress_bar.visibility=View.VISIBLE
                 }
                 else
-                {
-                    progress_bar.visibility=View.GONE
+                    {
+                        progress_bar.visibility=View.GONE
+                    }
+
+                is MovieViewState.Failed -> {
+                    movieViewModel.stopLoading()
+                    Toast.makeText(this.context,state.error,Toast.LENGTH_LONG).show()
                 }
+
+
+
 
             }
         }
