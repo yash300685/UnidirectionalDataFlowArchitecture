@@ -1,28 +1,20 @@
 package com.test.unidirectonalarchitecturesample
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import com.test.unidirectonalarchitecturesample.adapter.SimpleMoviesAdapter
 
-import com.test.unidirectonalarchitecturesample.dummy.DummyContent
-import com.test.unidirectonalarchitecturesample.dummy.DummyContent.DummyItem
-import com.test.unidirectonalarchitecturesample.models.MovieModel
-import com.test.unidirectonalarchitecturesample.network.Status
+import com.test.unidirectonalarchitecturesample.groupieItems.MovieItem
 import com.test.unidirectonalarchitecturesample.viewmodels.MovieViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.dsl.module
-import com.test.unidirectonalarchitecturesample.network.Result
 import com.test.unidirectonalarchitecturesample.state.MovieViewState
+import com.xwray.groupie.GroupAdapter
 import io.uniflow.androidx.flow.onStates
 import kotlinx.android.synthetic.main.fragment_item_list.*
 
@@ -39,7 +31,7 @@ val fragmentModule = module {
 class MoviesFragment : Fragment() {
 
     private val movieViewModel: MovieViewModel by viewModel()
-    private val adapter = SimpleMoviesAdapter(arrayListOf())
+    private val adapter by lazy { GroupAdapter<GroupieViewHolder>() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,7 +52,9 @@ class MoviesFragment : Fragment() {
             when (state) {
                 is MovieViewState.Movie -> {
                     movieViewModel.stopLoading()
-                    adapter.updateMovies(state.movieList)
+                    for(movie in state.movieList )
+                    adapter.add(MovieItem(movie,context))
+
                 }
                 is MovieViewState.Loading ->
                     if(state.isLoading)
